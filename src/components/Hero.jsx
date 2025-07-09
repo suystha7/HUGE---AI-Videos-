@@ -3,16 +3,28 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+import { useTypewriter } from "react-simple-typewriter";
 
 gsap.registerPlugin(MotionPathPlugin);
 
 export default function Hero() {
   const headingRef = useRef(null);
-  const subtextRef = useRef(null);
   const videoRef = useRef(null);
   const overlayRef = useRef(null);
   const badgeRef = useRef(null);
   const pulseRefs = useRef([]);
+  const ctaRef = useRef(null);
+  const particlesRef = useRef([]);
+
+  const [text] = useTypewriter({
+    words: [
+      "Watch & Share curated AI-generated videos",
+      "Auto summaries, transcripts & insights",
+      "Explore the magic of AI storytelling",
+    ],
+    loop: true,
+    delaySpeed: 2500,
+  });
 
   useEffect(() => {
     const tl = gsap.timeline();
@@ -24,24 +36,23 @@ export default function Hero() {
       ease: "power4.out",
     });
 
-    tl.from(
-      subtextRef.current,
+    gsap.fromTo(
+      badgeRef.current,
       {
-        y: 40,
+        motionPath: {
+          path: [{ x: -100, y: -80 }, { x: 0, y: 0 }],
+        },
         opacity: 0,
-        duration: 0.5,
-        ease: "power3.out",
       },
-      "-=0.5"
+      {
+        motionPath: {
+          path: [{ x: -100, y: -80 }, { x: 0, y: 0 }],
+        },
+        duration: 2,
+        ease: "power2.out",
+        opacity: 1,
+      }
     );
-
-    gsap.to(badgeRef.current, {
-      y: -10,
-      duration: 2,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    });
 
     pulseRefs.current.forEach((circle, i) => {
       gsap.to(circle, {
@@ -53,6 +64,14 @@ export default function Hero() {
         yoyo: true,
         delay: i * 0.3,
       });
+    });
+
+    gsap.to(ctaRef.current, {
+      scale: 1.05,
+      duration: 1.5,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
     });
 
     gsap.to(videoRef.current, {
@@ -72,13 +91,23 @@ export default function Hero() {
       repeat: -1,
       delay: 1,
     });
+
+    particlesRef.current.forEach((el) => {
+      gsap.to(el, {
+        x: () => Math.random() * window.innerWidth,
+        y: () => Math.random() * window.innerHeight,
+        repeat: -1,
+        duration: 10 + Math.random() * 10,
+        ease: "none",
+      });
+    });
   }, []);
 
   return (
     <section className="relative h-screen flex flex-col justify-center items-center px-6 text-center overflow-hidden mt-14">
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover aspect-video"
+        className="absolute inset-0 w-full h-screen object-cover aspect-video"
         src="/assets/66657_sd.mp4"
         autoPlay
         muted
@@ -111,19 +140,37 @@ export default function Hero() {
         />
       ))}
 
+      {Array.from({ length: 12 }).map((_, i) => (
+        <div
+          key={i}
+          ref={(el) => (particlesRef.current[i] = el)}
+          className="absolute w-2 h-2 bg-[#fe7200] rounded-full opacity-30 blur-sm"
+          style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+          }}
+        />
+      ))}
+
       <h1
         ref={headingRef}
-        className="relative z-10 text-6xl md:text-8xl font-bold text-[#fe7200] drop-shadow-lg"
+        className="relative z-10 text-5xl md:text-8xl font-bold text-[#fe7200] drop-shadow-lg"
       >
         Discover AI Videos Magic
       </h1>
-      <p
-        ref={subtextRef}
-        className="relative z-10 mt-6 text-xl text-gray-200 max-w-2xl drop-shadow-md"
-      >
-        Watch & Share curated AI-generated videos with auto summaries,
-        transcripts & insights.
+
+      <p className="relative z-10 mt-6 text-xl text-gray-200 max-w-2xl drop-shadow-md">
+        {text}
+        <span className="text-[#fe7200] font-bold">|</span>
       </p>
+      
+      <button
+        ref={ctaRef}
+        onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
+        className="mt-8 px-6 py-3 bg-[#fe7200] text-white rounded-full text-lg font-semibold shadow-lg hover:scale-105 transition duration-300"
+      >
+        Explore Features
+      </button>
     </section>
   );
 }
