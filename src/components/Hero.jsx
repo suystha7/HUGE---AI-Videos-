@@ -1,15 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 import { useTypewriter } from "react-simple-typewriter";
 
 gsap.registerPlugin(MotionPathPlugin);
 
+const videoSources = [
+  "/assets/80187_sd.mp4",
+  "/assets/77600_sd.mp4",
+  "/assets/80832_sd.mp4",
+  "/assets/80730_sd.mp4",
+];
+
 export default function Hero() {
   const headingRef = useRef(null);
-  const videoRef = useRef(null);
   const overlayRef = useRef(null);
   const badgeRef = useRef(null);
   const pulseRefs = useRef([]);
@@ -25,6 +31,18 @@ export default function Hero() {
     loop: true,
     delaySpeed: 2500,
   });
+
+  const [activeVideo, setActiveVideo] = useState(0);
+  const videoRefs = useRef([]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveVideo((prev) => (prev + 1) % videoSources.length);
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, []);
+
 
   useEffect(() => {
     const tl = gsap.timeline();
@@ -74,15 +92,6 @@ export default function Hero() {
       ease: "sine.inOut",
     });
 
-    gsap.to(videoRef.current, {
-      scale: 1.05,
-      opacity: 0.85,
-      duration: 6,
-      ease: "elastic.inOut",
-      yoyo: true,
-      repeat: -1,
-    });
-
     gsap.to(overlayRef.current, {
       opacity: 0.5,
       duration: 4,
@@ -103,17 +112,34 @@ export default function Hero() {
     });
   }, []);
 
+  useEffect(() => {
+    videoRefs.current.forEach((vid, i) => {
+      if (!vid) return;
+      if (i === activeVideo) {
+        gsap.to(vid, { opacity: 1, duration: 1, ease: "power2.out", zIndex: 10 });
+        vid.play();
+      } else {
+        gsap.to(vid, { opacity: 0, duration: 1, ease: "power2.out", zIndex: 1 });
+        vid.pause();
+        vid.currentTime = 0;
+      }
+    });
+  }, [activeVideo]);
+
   return (
     <section className="relative h-screen flex flex-col justify-center items-center px-6 text-center overflow-hidden mt-14">
-      <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-screen object-cover aspect-video"
-        src="/assets/66657_sd.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-      />
+      {videoSources.map((src, i) => (
+        <video
+          key={i}
+          ref={(el) => (videoRefs.current[i] = el)}
+          className="absolute inset-0 w-full h-screen object-cover aspect-video"
+          src={src}
+          muted
+          loop
+          playsInline
+          style={{ opacity: i === activeVideo ? 1 : 0, position: "absolute", top: 0, left: 0 }}
+        />
+      ))}
 
       <div
         ref={overlayRef}
@@ -127,18 +153,16 @@ export default function Hero() {
         🚀 AI Powered
       </div>
 
-      {[
-        { top: "20%", left: "10%" },
-        { top: "30%", right: "15%" },
-        { bottom: "25%", left: "20%" },
-      ].map((style, i) => (
-        <div
-          key={i}
-          ref={(el) => (pulseRefs.current[i] = el)}
-          className="absolute w-4 h-4 bg-blue-500 rounded-full opacity-40 blur-sm"
-          style={style}
-        />
-      ))}
+      {[{ top: "20%", left: "10%" }, { top: "30%", right: "15%" }, { bottom: "25%", left: "20%" }].map(
+        (style, i) => (
+          <div
+            key={i}
+            ref={(el) => (pulseRefs.current[i] = el)}
+            className="absolute w-4 h-4 bg-blue-500 rounded-full opacity-40 blur-sm"
+            style={style}
+          />
+        )
+      )}
 
       {Array.from({ length: 12 }).map((_, i) => (
         <div
@@ -163,7 +187,7 @@ export default function Hero() {
         {text}
         <span className="text-[#fe7200] font-bold">|</span>
       </p>
-      
+
       <button
         ref={ctaRef}
         onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}

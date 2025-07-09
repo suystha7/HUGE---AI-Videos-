@@ -40,12 +40,10 @@ export default function Navbar() {
   return (
     <nav
       ref={navRef}
-      className="fixed top-0 left-0 w-full h-16 z-50 px-8 py-4 bg-black backdrop-blur-lg flex justify-between items-center border-b border-white/10"
+      className="fixed top-0 left-0 w-full h-20 z-50 px-8 py-4 bg-black backdrop-blur-lg flex justify-between items-center border-b border-white/10"
     >
       {/* Logo */}
-      <h1 className="text-2xl font-extrabold tracking-tight text-white">
-        <span className="text-[#b06c41]">Huge</span> AI Videos
-      </h1>
+      <img src="/assets/huge-logo.jpg" alt="" className="w-fit h-full"/>
 
       {/* Menu Toggle Button */}
       <button
