@@ -8,8 +8,21 @@ export default function Navbar() {
   const navRef = useRef(null);
   const menuRef = useRef(null);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const navItems = ["About", "Features"];
+  
+  useEffect(() => {
+    function handleScroll() {
+      if (window.scrollY > 30) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (isMobileMenuOpen && menuRef.current) {
@@ -40,12 +53,14 @@ export default function Navbar() {
   return (
     <nav
       ref={navRef}
-      className="fixed top-0 left-0 w-full h-20 z-50 px-8 py-4 bg-black backdrop-blur-lg flex justify-between items-center border-b border-white/10"
+      className={`fixed top-0 left-0 w-full h-20 z-50 px-8 py-4 flex justify-between items-center border-b transition-colors duration-500 ${
+        isScrolled
+          ? "bg-black/70 border-white/10 backdrop-blur-lg"
+          : "bg-transparent border-transparent"
+      }`}
     >
-      {/* Logo */}
-      <img src="/assets/huge-logo.jpg" alt="" className="w-fit h-full"/>
+      <img src="/assets/huge-logo.jpg" alt="Logo" className="w-fit h-full" />
 
-      {/* Menu Toggle Button */}
       <button
         className="text-[#b06c41] focus:outline-none z-50"
         onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}

@@ -19,7 +19,6 @@ export default function Hero() {
   const overlayRef = useRef(null);
   const badgeRef = useRef(null);
   const pulseRefs = useRef([]);
-  const ctaRef = useRef(null);
   const particlesRef = useRef([]);
 
   const [text] = useTypewriter({
@@ -29,7 +28,7 @@ export default function Hero() {
       "Explore the magic of AI storytelling",
     ],
     loop: true,
-    delaySpeed: 2500,
+    delaySpeed: 2000,
   });
 
   const [activeVideo, setActiveVideo] = useState(0);
@@ -42,7 +41,6 @@ export default function Hero() {
 
     return () => clearInterval(interval);
   }, []);
-
 
   useEffect(() => {
     const tl = gsap.timeline();
@@ -58,13 +56,19 @@ export default function Hero() {
       badgeRef.current,
       {
         motionPath: {
-          path: [{ x: -100, y: -80 }, { x: 0, y: 0 }],
+          path: [
+            { x: -100, y: -80 },
+            { x: 0, y: 0 },
+          ],
         },
         opacity: 0,
       },
       {
         motionPath: {
-          path: [{ x: -100, y: -80 }, { x: 0, y: 0 }],
+          path: [
+            { x: -100, y: -80 },
+            { x: 0, y: 0 },
+          ],
         },
         duration: 2,
         ease: "power2.out",
@@ -82,14 +86,6 @@ export default function Hero() {
         yoyo: true,
         delay: i * 0.3,
       });
-    });
-
-    gsap.to(ctaRef.current, {
-      scale: 1.05,
-      duration: 1.5,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
     });
 
     gsap.to(overlayRef.current, {
@@ -112,14 +108,25 @@ export default function Hero() {
     });
   }, []);
 
+
   useEffect(() => {
     videoRefs.current.forEach((vid, i) => {
       if (!vid) return;
       if (i === activeVideo) {
-        gsap.to(vid, { opacity: 1, duration: 1, ease: "power2.out", zIndex: 10 });
+        gsap.to(vid, {
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+          zIndex: 10,
+        });
         vid.play();
       } else {
-        gsap.to(vid, { opacity: 0, duration: 1, ease: "power2.out", zIndex: 1 });
+        gsap.to(vid, {
+          opacity: 0,
+          duration: 1,
+          ease: "power2.out",
+          zIndex: 1,
+        });
         vid.pause();
         vid.currentTime = 0;
       }
@@ -127,7 +134,7 @@ export default function Hero() {
   }, [activeVideo]);
 
   return (
-    <section className="relative h-screen flex flex-col justify-center items-center px-6 text-center overflow-hidden mt-14">
+    <section className="relative h-screen flex flex-col justify-center items-center px-6 text-center overflow-hidden mt-20">
       {videoSources.map((src, i) => (
         <video
           key={i}
@@ -137,7 +144,12 @@ export default function Hero() {
           muted
           loop
           playsInline
-          style={{ opacity: i === activeVideo ? 1 : 0, position: "absolute", top: 0, left: 0 }}
+          style={{
+            opacity: i === activeVideo ? 1 : 0,
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
         />
       ))}
 
@@ -153,16 +165,18 @@ export default function Hero() {
         🚀 AI Powered
       </div>
 
-      {[{ top: "20%", left: "10%" }, { top: "30%", right: "15%" }, { bottom: "25%", left: "20%" }].map(
-        (style, i) => (
-          <div
-            key={i}
-            ref={(el) => (pulseRefs.current[i] = el)}
-            className="absolute w-4 h-4 bg-blue-500 rounded-full opacity-40 blur-sm"
-            style={style}
-          />
-        )
-      )}
+      {[
+        { top: "20%", left: "10%" },
+        { top: "30%", right: "15%" },
+        { bottom: "25%", left: "20%" },
+      ].map((style, i) => (
+        <div
+          key={i}
+          ref={(el) => (pulseRefs.current[i] = el)}
+          className="absolute w-4 h-4 bg-blue-500 rounded-full opacity-40 blur-sm"
+          style={style}
+        />
+      ))}
 
       {Array.from({ length: 12 }).map((_, i) => (
         <div
@@ -178,23 +192,15 @@ export default function Hero() {
 
       <h1
         ref={headingRef}
-        className="relative z-10 text-5xl md:text-8xl font-bold text-[#fe7200] drop-shadow-lg"
+        className="relative z-10 text-5xl md:text-7xl font-bold text-[#fe7200] drop-shadow-lg"
       >
         Discover AI Videos Magic
       </h1>
 
-      <p className="relative z-10 mt-6 text-xl text-gray-200 max-w-2xl drop-shadow-md">
+      <p className="relative z-10 mt-6 text-xl text-white font-semibold max-w-2xl drop-shadow-md">
         {text}
         <span className="text-[#fe7200] font-bold">|</span>
       </p>
-
-      <button
-        ref={ctaRef}
-        onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
-        className="mt-8 px-6 py-3 bg-[#fe7200] text-white rounded-full text-lg font-semibold shadow-lg hover:scale-105 transition duration-300"
-      >
-        Explore Features
-      </button>
     </section>
   );
 }

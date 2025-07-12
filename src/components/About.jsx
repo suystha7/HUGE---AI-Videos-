@@ -45,15 +45,15 @@ export default function AboutSection() {
   return (
     <section
       id="about"
-      className="relative min-h-screen w-full flex items-center justify-center px-6 text-white transition-bg duration-700 ease-in-out"
+      className="relative min-h-screen w-full flex items-center justify-center px-4 md:px-6 text-white transition-colors duration-700 ease-in-out"
       style={{
         backgroundImage: `url(${aboutContents[activeIndex].bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundAttachment: "fixed",
+        backgroundAttachment: "local",
       }}
     >
-      <div className="absolute inset-0 bg-black/60 z-0 transition-opacity duration-700" />
+      <div className="absolute inset-0 bg-black/60 z-0 transition-opacity duration-700"></div>
 
       <div className="relative z-10 w-full max-w-3xl flex items-center justify-center">
         <Swiper
@@ -61,7 +61,7 @@ export default function AboutSection() {
           mousewheel
           pagination={{ clickable: true }}
           modules={[Mousewheel, Pagination]}
-          className="w-full h-[300px] md:h-[400px]"
+          className="w-full h-[280px] sm:h-[320px] md:h-[400px]"
           onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
           slidesPerView={1}
           spaceBetween={0}
@@ -69,11 +69,11 @@ export default function AboutSection() {
         >
           {aboutContents.map((content, idx) => (
             <SwiperSlide key={idx}>
-              <div className="flex flex-col items-center justify-center text-center px-4">
-                <h2 className="text-3xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">
+              <div className="flex flex-col items-center justify-center text-center px-3 sm:px-6">
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold mb-4 drop-shadow-lg leading-tight">
                   {content.title}
                 </h2>
-                <p className="text-lg leading-relaxed tracking-wide drop-shadow-md max-w-xl">
+                <p className="text-base sm:text-lg leading-relaxed tracking-wide drop-shadow-md max-w-xl">
                   {content.description}
                 </p>
               </div>
